@@ -2,8 +2,21 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Icon from "@/components/ui/icon";
+import { useToast } from "@/hooks/use-toast";
 
 const Index = () => {
+  const { toast } = useToast();
+  
+  const serverIP = "CraftTime.minerent.io";
+  
+  const copyIP = () => {
+    navigator.clipboard.writeText(serverIP);
+    toast({
+      title: "IP скопирован!",
+      description: "Адрес сервера скопирован в буфер обмена",
+    });
+  };
+  
   const donationTiers = [
     {
       name: "STEVE",
@@ -87,6 +100,22 @@ const Index = () => {
           <h1 className="text-6xl md:text-8xl font-black mb-6 bg-gradient-to-r from-primary via-green-400 to-emerald-500 bg-clip-text text-transparent drop-shadow-2xl">
             CRAFT TIME MC
           </h1>
+          
+          <div className="flex items-center justify-center gap-3 mb-6">
+            <div className="bg-card/80 backdrop-blur-sm px-6 py-3 rounded-xl border-2 border-primary/30">
+              <p className="text-xl md:text-2xl font-mono font-bold text-primary">
+                {serverIP}
+              </p>
+            </div>
+            <Button 
+              onClick={copyIP}
+              size="lg"
+              variant="outline"
+              className="border-2 border-primary/30 hover:bg-primary/20"
+            >
+              <Icon name="Copy" size={20} />
+            </Button>
+          </div>
           
           <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-2xl mx-auto">
             Поддержи развитие сервера и получи уникальные привилегии
