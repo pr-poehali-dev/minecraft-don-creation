@@ -3,9 +3,17 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import Icon from "@/components/ui/icon";
 import { useToast } from "@/hooks/use-toast";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useState } from "react";
 
 const Index = () => {
   const { toast } = useToast();
+  const [selectedTier, setSelectedTier] = useState<any>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [nickname, setNickname] = useState("");
+  const [email, setEmail] = useState("");
   
   const serverIP = "CraftTimeMC.minerent.io";
   
@@ -15,6 +23,22 @@ const Index = () => {
       title: "IP скопирован!",
       description: "Адрес сервера скопирован в буфер обмена",
     });
+  };
+  
+  const handlePurchase = (tier: any) => {
+    setSelectedTier(tier);
+    setIsDialogOpen(true);
+  };
+  
+  const handleSubmitPurchase = (e: React.FormEvent) => {
+    e.preventDefault();
+    toast({
+      title: "Заявка принята!",
+      description: `Скоро вы получите ${selectedTier?.name} привилегии на ник ${nickname}`,
+    });
+    setIsDialogOpen(false);
+    setNickname("");
+    setEmail("");
   };
   
   const donationTiers = [
@@ -180,6 +204,7 @@ const Index = () => {
                 </ul>
                 
                 <Button 
+                  onClick={() => handlePurchase(tier)}
                   className={`w-full text-lg py-6 bg-gradient-to-r ${tier.color} hover:opacity-90 transition-opacity font-bold`}
                 >
                   <Icon name="ShoppingCart" className="mr-2" size={20} />
@@ -291,6 +316,67 @@ const Index = () => {
           <p className="text-sm text-muted-foreground mt-2">Поддержка: support@server.ru</p>
         </div>
       </footer>
+
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-black">
+              Покупка {selectedTier?.name}
+            </DialogTitle>
+            <DialogDescription className="text-lg">
+              Стоимость: {selectedTier?.price}
+            </DialogDescription>
+          </DialogHeader>
+          
+          <form onSubmit={handleSubmitPurchase} className="space-y-4 mt-4">
+            <div className="space-y-2">
+              <Label htmlFor="nickname">Ваш ник в Minecraft</Label>
+              <Input
+                id="nickname"
+                placeholder="Steve123"
+                value={nickname}
+                onChange={(e) => setNickname(e.target.value)}
+                required
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="email">Email для чека</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="example@mail.ru"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="bg-muted p-4 rounded-lg space-y-2">
+              <p className="text-sm font-semibold">Привилегии {selectedTier?.name}:</p>
+              <ul className="text-sm space-y-1">
+                {selectedTier?.features.slice(0, 3).map((feature: string, idx: number) => (
+                  <li key={idx} className="flex items-center gap-2">
+                    <Icon name="Check" size={16} className="text-primary" />
+                    {feature}
+                  </li>
+                ))}
+                {selectedTier?.features.length > 3 && (
+                  <li className="text-muted-foreground">и ещё {selectedTier.features.length - 3}...</li>
+                )}
+              </ul>
+            </div>
+            
+            <Button 
+              type="submit" 
+              className={`w-full text-lg py-6 bg-gradient-to-r ${selectedTier?.color} hover:opacity-90 font-bold`}
+            >
+              <Icon name="CreditCard" className="mr-2" size={20} />
+              Перейти к оплате
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
