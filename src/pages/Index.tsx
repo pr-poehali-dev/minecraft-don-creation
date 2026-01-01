@@ -7,6 +7,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
+import { Separator } from "@/components/ui/separator";
 
 const Index = () => {
   const { toast } = useToast();
@@ -14,6 +15,7 @@ const Index = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [nickname, setNickname] = useState("");
   const [email, setEmail] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState<"sbp" | "card" | null>(null);
   
   const serverIP = "CraftTimeMC.minerent.io";
   
@@ -32,13 +34,24 @@ const Index = () => {
   
   const handleSubmitPurchase = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!paymentMethod) {
+      toast({
+        title: "Выберите способ оплаты",
+        description: "Пожалуйста, выберите СБП или банковскую карту",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     toast({
-      title: "Заявка принята!",
-      description: `Скоро вы получите ${selectedTier?.name} привилегии на ник ${nickname}`,
+      title: "Переход к оплате...",
+      description: `Метод: ${paymentMethod === 'sbp' ? 'СБП' : 'Банковская карта'}`,
     });
+    
     setIsDialogOpen(false);
     setNickname("");
     setEmail("");
+    setPaymentMethod(null);
   };
   
   const donationTiers = [
@@ -366,13 +379,40 @@ const Index = () => {
                 )}
               </ul>
             </div>
+
+            <Separator />
+
+            <div className="space-y-3">
+              <Label>Способ оплаты</Label>
+              <div className="grid grid-cols-2 gap-3">
+                <Button
+                  type="button"
+                  variant={paymentMethod === 'sbp' ? 'default' : 'outline'}
+                  className="h-20 flex-col gap-2"
+                  onClick={() => setPaymentMethod('sbp')}
+                >
+                  <Icon name="Smartphone" size={24} />
+                  <span className="text-sm font-semibold">СБП</span>
+                </Button>
+                <Button
+                  type="button"
+                  variant={paymentMethod === 'card' ? 'default' : 'outline'}
+                  className="h-20 flex-col gap-2"
+                  onClick={() => setPaymentMethod('card')}
+                >
+                  <Icon name="CreditCard" size={24} />
+                  <span className="text-sm font-semibold">Карта РФ</span>
+                </Button>
+              </div>
+            </div>
             
             <Button 
               type="submit" 
               className={`w-full text-lg py-6 bg-gradient-to-r ${selectedTier?.color} hover:opacity-90 font-bold`}
+              disabled={!paymentMethod}
             >
-              <Icon name="CreditCard" className="mr-2" size={20} />
-              Перейти к оплате
+              <Icon name="ArrowRight" className="mr-2" size={20} />
+              Оплатить {selectedTier?.price}
             </Button>
           </form>
         </DialogContent>
