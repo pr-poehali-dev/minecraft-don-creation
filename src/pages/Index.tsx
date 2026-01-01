@@ -6,46 +6,62 @@ import Icon from "@/components/ui/icon";
 const Index = () => {
   const donationTiers = [
     {
-      name: "VIP",
+      name: "STEVE",
       price: "299₽",
-      color: "from-green-600 to-emerald-500",
-      icon: "Sparkles",
+      color: "from-blue-600 to-cyan-500",
+      icon: "User",
       features: [
         "Цветной ник в чате",
         "Возможность летать",
-        "Доступ к /kit vip",
+        "Доступ к /kit steve",
         "5 точек дома",
         "Приватная зона 50x50"
       ]
     },
     {
-      name: "PREMIUM",
+      name: "FOX",
       price: "599₽",
-      color: "from-yellow-500 to-orange-500",
-      icon: "Crown",
+      color: "from-orange-600 to-red-500",
+      icon: "Flame",
       popular: true,
       features: [
-        "Все привилегии VIP",
+        "Все привилегии STEVE",
         "Уникальный префикс",
-        "Доступ к /kit premium",
+        "Доступ к /kit fox",
         "10 точек дома",
         "Приватная зона 100x100",
         "Креативный режим в своей зоне"
       ]
     },
     {
-      name: "LEGEND",
+      name: "RICHER",
       price: "999₽",
-      color: "from-purple-600 to-pink-500",
-      icon: "Gem",
+      color: "from-yellow-500 to-amber-500",
+      icon: "Coins",
       features: [
-        "Все привилегии PREMIUM",
+        "Все привилегии FOX",
         "Эксклюзивный титул",
-        "Доступ к /kit legend",
+        "Доступ к /kit richer",
         "Безлимитные точки дома",
         "Приватная зона 200x200",
         "Собственный варп",
         "Доступ к закрытым мирам"
+      ]
+    },
+    {
+      name: "SUFLE",
+      price: "1499₽",
+      color: "from-purple-600 to-pink-500",
+      icon: "Crown",
+      features: [
+        "Все привилегии RICHER",
+        "Эксклюзивный скин персонажа",
+        "Доступ к /kit sufle",
+        "Личный NPC помощник",
+        "Приватная зона 300x300",
+        "Приоритетный вход на сервер",
+        "Создание собственных событий",
+        "VIP поддержка 24/7"
       ]
     }
   ];
@@ -97,7 +113,7 @@ const Index = () => {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8 max-w-7xl mx-auto">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
           {donationTiers.map((tier, index) => (
             <Card 
               key={tier.name}
