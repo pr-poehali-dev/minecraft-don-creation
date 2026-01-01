@@ -16,6 +16,10 @@ const Index = () => {
   const [nickname, setNickname] = useState("");
   const [email, setEmail] = useState("");
   const [paymentMethod, setPaymentMethod] = useState<"sbp" | "card" | null>(null);
+  const [step, setStep] = useState<"form" | "payment">("form");
+  const [cardNumber, setCardNumber] = useState("");
+  const [cardExpiry, setCardExpiry] = useState("");
+  const [cardCVV, setCardCVV] = useState("");
   
   const serverIP = "CraftTimeMC.minerent.io";
   
@@ -30,9 +34,10 @@ const Index = () => {
   const handlePurchase = (tier: any) => {
     setSelectedTier(tier);
     setIsDialogOpen(true);
+    setStep("form");
   };
   
-  const handleSubmitPurchase = (e: React.FormEvent) => {
+  const handleSubmitForm = (e: React.FormEvent) => {
     e.preventDefault();
     if (!paymentMethod) {
       toast({
@@ -42,16 +47,30 @@ const Index = () => {
       });
       return;
     }
-    
+    setStep("payment");
+  };
+  
+  const handlePayment = (e: React.FormEvent) => {
+    e.preventDefault();
     toast({
-      title: "Переход к оплате...",
-      description: `Метод: ${paymentMethod === 'sbp' ? 'СБП' : 'Банковская карта'}`,
+      title: "Оплата обрабатывается...",
+      description: "Пожалуйста, подождите",
     });
     
-    setIsDialogOpen(false);
-    setNickname("");
-    setEmail("");
-    setPaymentMethod(null);
+    setTimeout(() => {
+      toast({
+        title: "Оплата успешна!",
+        description: `Привилегии ${selectedTier?.name} будут выданы в течение 5 минут`,
+      });
+      setIsDialogOpen(false);
+      setStep("form");
+      setNickname("");
+      setEmail("");
+      setPaymentMethod(null);
+      setCardNumber("");
+      setCardExpiry("");
+      setCardCVV("");
+    }, 2000);
   };
   
   const donationTiers = [
@@ -330,18 +349,25 @@ const Index = () => {
         </div>
       </footer>
 
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+      <Dialog open={isDialogOpen} onOpenChange={(open) => {
+        setIsDialogOpen(open);
+        if (!open) {
+          setStep("form");
+          setPaymentMethod(null);
+        }
+      }}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle className="text-2xl font-black">
-              Покупка {selectedTier?.name}
+              {step === "form" ? `Покупка ${selectedTier?.name}` : `Оплата ${selectedTier?.price}`}
             </DialogTitle>
             <DialogDescription className="text-lg">
-              Стоимость: {selectedTier?.price}
+              {step === "form" ? `Стоимость: ${selectedTier?.price}` : paymentMethod === 'sbp' ? 'Отсканируйте QR-код' : 'Введите данные карты'}
             </DialogDescription>
           </DialogHeader>
           
-          <form onSubmit={handleSubmitPurchase} className="space-y-4 mt-4">
+          {step === "form" ? (
+          <form onSubmit={handleSubmitForm} className="space-y-4 mt-4">
             <div className="space-y-2">
               <Label htmlFor="nickname">Ваш ник в Minecraft</Label>
               <Input
@@ -412,9 +438,101 @@ const Index = () => {
               disabled={!paymentMethod}
             >
               <Icon name="ArrowRight" className="mr-2" size={20} />
-              Оплатить {selectedTier?.price}
+              Продолжить
             </Button>
           </form>
+          ) : (
+          <div className="space-y-4 mt-4">
+            {paymentMethod === 'sbp' ? (
+              <div className="flex flex-col items-center space-y-4">
+                <div className="bg-white p-6 rounded-xl">
+                  <div className="w-64 h-64 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-lg flex items-center justify-center">
+                    <div className="text-center">
+                      <Icon name="QrCode" size={120} className="mx-auto mb-4 text-foreground" />
+                      <p className="text-sm text-muted-foreground">QR-код для СБП</p>
+                    </div>
+                  </div>
+                </div>
+                <p className="text-center text-sm text-muted-foreground">
+                  Отсканируйте QR-код в приложении вашего банка
+                </p>
+                <Button
+                  onClick={() => setStep("form")}
+                  variant="outline"
+                  className="w-full"
+                >
+                  <Icon name="ArrowLeft" className="mr-2" size={16} />
+                  Назад
+                </Button>
+              </div>
+            ) : (
+              <form onSubmit={handlePayment} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="cardNumber">Номер карты</Label>
+                  <Input
+                    id="cardNumber"
+                    placeholder="0000 0000 0000 0000"
+                    value={cardNumber}
+                    onChange={(e) => setCardNumber(e.target.value)}
+                    maxLength={19}
+                    required
+                  />
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="cardExpiry">Срок действия</Label>
+                    <Input
+                      id="cardExpiry"
+                      placeholder="MM/ГГ"
+                      value={cardExpiry}
+                      onChange={(e) => setCardExpiry(e.target.value)}
+                      maxLength={5}
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="cardCVV">CVV</Label>
+                    <Input
+                      id="cardCVV"
+                      placeholder="123"
+                      type="password"
+                      value={cardCVV}
+                      onChange={(e) => setCardCVV(e.target.value)}
+                      maxLength={3}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="bg-muted/50 p-3 rounded-lg flex items-start gap-2">
+                  <Icon name="Shield" size={20} className="text-primary mt-0.5" />
+                  <p className="text-xs text-muted-foreground">
+                    Ваши данные защищены по стандарту PCI DSS
+                  </p>
+                </div>
+                
+                <Button 
+                  type="submit" 
+                  className={`w-full text-lg py-6 bg-gradient-to-r ${selectedTier?.color} hover:opacity-90 font-bold`}
+                >
+                  <Icon name="Lock" className="mr-2" size={20} />
+                  Оплатить {selectedTier?.price}
+                </Button>
+                
+                <Button
+                  type="button"
+                  onClick={() => setStep("form")}
+                  variant="outline"
+                  className="w-full"
+                >
+                  <Icon name="ArrowLeft" className="mr-2" size={16} />
+                  Назад
+                </Button>
+              </form>
+            )}
+          </div>
+          )}
         </DialogContent>
       </Dialog>
     </div>
