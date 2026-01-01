@@ -7,7 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 const Index = () => {
   const { toast } = useToast();
   
-  const serverIP = "CraftTime.minerent.io";
+  const serverIP = "CraftTimeMC.minerent.io";
   
   const copyIP = () => {
     navigator.clipboard.writeText(serverIP);
