@@ -274,9 +274,21 @@ const Index = () => {
       </section>
 
       <footer className="border-t border-border py-12 mt-20">
-        <div className="container mx-auto px-4 text-center text-muted-foreground">
-          <p className="text-lg">© 2024 Minecraft Server. Все привилегии выдаются навсегда.</p>
-          <p className="text-sm mt-2">Поддержка: support@server.ru</p>
+        <div className="container mx-auto px-4 text-center">
+          <div className="flex justify-center gap-4 mb-6">
+            <Button
+              asChild
+              size="lg"
+              className="bg-[#0088cc] hover:bg-[#0077b3] text-white"
+            >
+              <a href="https://t.me/CraftTimeMC" target="_blank" rel="noopener noreferrer">
+                <Icon name="MessageCircle" className="mr-2" size={20} />
+                Telegram
+              </a>
+            </Button>
+          </div>
+          <p className="text-lg text-muted-foreground">© 2024 CRAFT TIME MC. Все привилегии выдаются навсегда.</p>
+          <p className="text-sm text-muted-foreground mt-2">Поддержка: support@server.ru</p>
         </div>
       </footer>
     </div>
