@@ -85,7 +85,7 @@ const Index = () => {
           </Badge>
           
           <h1 className="text-6xl md:text-8xl font-black mb-6 bg-gradient-to-r from-primary via-green-400 to-emerald-500 bg-clip-text text-transparent drop-shadow-2xl">
-            MINECRAFT SERVER
+            CRAFT TIME MC
           </h1>
           
           <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-2xl mx-auto">
