@@ -192,6 +192,47 @@ const Index = () => {
       </section>
 
       <section className="container mx-auto px-4 py-20 border-t border-border">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-4xl font-black text-center mb-12">Последние обновления</h2>
+          
+          <div className="grid md:grid-cols-3 gap-6 mb-20">
+            {[
+              {
+                date: "15 декабря 2024",
+                title: "Новый игровой режим: SkyBlock",
+                desc: "Запущен уникальный SkyBlock с кастомными квестами и наградами",
+                badge: "Новое",
+                badgeColor: "bg-primary"
+              },
+              {
+                date: "10 декабря 2024",
+                title: "Обновление донат-привилегий",
+                desc: "Добавлены новые возможности для RICHER и SUFLE пакетов",
+                badge: "Обновление",
+                badgeColor: "bg-secondary"
+              },
+              {
+                date: "5 декабря 2024",
+                title: "Зимнее событие началось!",
+                desc: "Участвуйте в снежных баталиях и получайте эксклюзивные награды",
+                badge: "Событие",
+                badgeColor: "bg-purple-600"
+              }
+            ].map((news, idx) => (
+              <Card key={idx} className="border-2 hover:border-primary/50 transition-all hover:scale-105">
+                <CardHeader>
+                  <Badge className={`${news.badgeColor} w-fit mb-2`}>{news.badge}</Badge>
+                  <CardTitle className="text-xl mb-2">{news.title}</CardTitle>
+                  <p className="text-sm text-muted-foreground mb-3">{news.date}</p>
+                  <CardDescription className="text-base">{news.desc}</CardDescription>
+                </CardHeader>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="container mx-auto px-4 py-20 border-t border-border">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-4xl font-black text-center mb-12">Почему донат?</h2>
           
